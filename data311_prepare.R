@@ -2,7 +2,7 @@ library(dplyr)
 library(lubridate)
 library(ggmap)
 
-la_map = get_map("LosAngeles", zoom = 10) 
+la_map = get_map("LosAngeles county", zoom = 10) 
 
 data_311 = read.csv("la_city_independent_analysis/311_calls_w_CTs20171102103144.csv")
 
@@ -48,6 +48,7 @@ ggmap(la_map) +
     stat_density2d(data = data2, 
                    aes(x = LONGITUDE, y = LATITUDE,
                        fill = ..level..,
+                       group = CT10,
                        alpha = ..level..),
                    geom = "polygon") +
     scale_fill_gradient(low = "pink", high = "steelblue") +
@@ -55,6 +56,21 @@ ggmap(la_map) +
     theme(legend.position = "none")+
     labs(x = "", y = "", 
        title = "Requests Created By Month")
+### try to group by CT10
+ggmap(la_map) +
+  ggplot(data = data2, aes(x = LONGITUDE, y = LATITUDE,
+         group = group)) +
+  stat_density2d(fill = ..level..,
+                 alpha = ..level..,
+                 geom = "polygon") +
+  scale_fill_gradient(low = "pink", high = "steelblue") +
+  facet_wrap(~CREATEDMONTH)+
+  theme(legend.position = "none")+
+  labs(x = "", y = "", 
+       title = "Requests Created By Month")
+
+
+
 ###### service dilivered by weekday
 ggmap(la_map) +
   stat_density2d(data = data2, 
