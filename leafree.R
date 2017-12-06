@@ -6,28 +6,30 @@ library(tidyr)
 
 la_map = get_map("LosAngeles", zoom = 10) 
 
-Crime = read.csv("raw_data/Crime__Homeless_Victim_8_16_-_8_17.csv")
+crime = read.csv("raw_data/Crime__Homeless_Victim_8_16_-_8_17.csv")
 
-summary(Crime)
-dim(Crime)
+summary(crime)
+dim(crime)
 
-class(Crime$Date.Reported)
+class(crime$Date.Reported)
 
-Crime$Date.Reported = mdy(Crime$Date.Reported)
-Crime$Date.Occurred = mdy(Crime$Date.Occurred)
+crime$Date.Reported = mdy(crime$Date.Reported)
+crime$Date.Occurred = mdy(crime$Date.Occurred)
 
-class(Crime$Time.Occurred)
+class(crime$Time.Occurred)
 
-Crime$Time.Occurred = hm(Crime$Time.Occurred)
-?substr
-Crime$Location = gsub("[(*)]", "", Crime$Location)
+crime$Location = gsub("[(*)]", "", crime$Location)
 
-Crime = Crime %>% 
+crime = crime %>% 
   separate(col = "Time.Occurred", into = c("H", "M"), sep = -3) %>% 
   separate(col = "Location", into = c ("latitude","longitude"),sep = ",")
 
+
+crime$latitude = as.numeric(crime$latitude)
+crime$longitude = as.numeric(crime$longitude)
+
 ggmap(la_map) + 
-  stat_density2d(data = Crime, 
+  stat_density2d(data = crime, 
                  aes(x = longitude, y = latitude, 
                      fill = ..level.., 
                      alpha = ..level..), 
