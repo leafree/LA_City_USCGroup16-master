@@ -159,7 +159,7 @@ server <- function(input, output) {
           theme_void()+
           theme(plot.title = element_text(size = 18, hjust = .5))+    
           labs(x = "", y = "", 
-               title = paste("Response Level  (",input$res_level2, ")  Distribution", collapse = ""))+
+               title = paste("Response Level Counts by Weekday", collapse = ""))+
           theme(legend.position = "bottom")  +
         facet_wrap(~SERVICE_WDAY)
     })
