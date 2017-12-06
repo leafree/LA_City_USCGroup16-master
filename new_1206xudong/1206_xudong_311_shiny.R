@@ -68,7 +68,9 @@ ui <- fluidPage(tabsetPanel(
             radioButtons(inputId = "status",
                         label = "Choose a call status to display",
                         choices = list ("Closed", "Pending", "Cancelled"), 
-                        selected = "Closed")),
+                        selected = "Closed"),
+            h5("Below is the bar chart to describe different requests' status distribution over weekday"),  
+            plotOutput(outputId = "map3_bar_side")),
             mainPanel(
             plotOutput(outputId = "map3"),
             plotOutput(outputId = "map3_bar"))
@@ -173,7 +175,7 @@ server <- function(input, output) {
              title = paste("Response Level  (",input$res_level2, ")  Counts by Weekday & SPA", collapse = ""))+
         theme(legend.position = "bottom")
     })
-    #2 side bar chart over month and res_level (isolate)
+    #2 bar_side: bar chart over month and res_level (isolate)
     output$map2_bar_side <- renderPlot({
       ggplot(data = data_311call, 
              aes(x = SERVICE_WDAY, fill = RESPONSE_LEVEL)) +
@@ -212,6 +214,28 @@ server <- function(input, output) {
             labs(y = "counts",
                  title = paste(input$status," Requests Counts by Month & SPA", collapse = ""))
     })
+    #3 map_bar_side
+    output$map3_bar_side <- renderPlot({
+        ggplot(data_311call, aes(x = CREATEDMONTH, fill = STATUS)) +
+            geom_bar(position = "dodge")+
+            theme_bw()+
+            theme(legend.position = "bottom")+
+            labs(y = "counts",
+                 title = paste(input$status," Requests Counts by Month", collapse = ""))
+    })
+    
+    
+    output$map2_bar_side <- renderPlot({
+        ggplot(data = data_311call, 
+               aes(x = SERVICE_WDAY, fill = RESPONSE_LEVEL)) +
+            geom_bar(position = "dodge")+
+            #        geom_label(stat = "count", aes(label = ..count.., y = ..count..))+
+            theme_bw()+
+            labs(x = "Week Day", y = "Service Counts", 
+                 title = paste("Response Level  (",input$res_level2, ")  Counts\n by weekday", collapse = ""))+
+            theme(legend.position="bottom", legend.title = element_blank())
+    })
+    
     
     #4 reactive_grading #4 reactive_grading
     data_311call_grading2 = reactive({
