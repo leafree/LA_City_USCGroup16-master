@@ -446,7 +446,7 @@ server <- function(input, output) {
           xlab("Number of Shalters")+
           ylab("SPA")+
           ggtitle("Shalters count by SPA")+
-          geom_text(aes(label = count), 
+          geom_text(aes(label = count),   # xudong help!
                     position = position_stack(vjust = 0.8)) 
       }
     )
