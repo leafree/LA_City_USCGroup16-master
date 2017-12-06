@@ -117,6 +117,9 @@ ui <- fluidPage(tabsetPanel(
                                                selected = NULL),
                             checkboxGroupInput("show_weekdays","Weekdays",
                                                names(shelters_fun)[28:34],
+                                               selected = NULL),
+                            checkboxGroupInput("show_restrictions","Restrictions to show",
+                                               names(shelters_fun)[35:39],
                                                selected = NULL)),
                mainPanel(
                  tabsetPanel(
@@ -195,7 +198,19 @@ ui <- fluidPage(tabsetPanel(
                    plotOutput(outputId = "ethnicity_weapon"))
                ))
              
-    )
+    ),
+    tabPanel("crime vs. shelters",
+             sidebarPanel(
+               helpText("Crime Types in Los Angeles"),
+               checkboxGroupInput(inputId = "type1",
+                                  label = "Choose a crime type to display",
+                                  choices = list ("AGGRAVATED ASSAULT", "SIMPLE ASSAULT", "ROBBERY","THEFT","RAPE","OTHERS"), 
+                                  selected = "AGGRAVATED ASSAULT"),
+               checkboxGroupInput("show_funs1", "Functions",
+                                  names(shelters_fun)[9:27], 
+                                  selected = NULL)),
+             mainPanel(plotOutput(outputId = "crime_shelters"))
+             )
     
 ))
 
@@ -398,11 +413,25 @@ server <- function(input, output) {
         shelters_fun3 = na.omit(shelters_fun3)[1]
       }
       
+      if(is.null(input$show_restrictions)){
+        shelters_restrictions = shelters_fun2[2]
+      }
+      else{
+        shelters_restrictions = shelters_fun2 %>% 
+          select(2,input$show_restrictions)
+        shelters_restrictions[shelters_restrictions == 0] =NA
+        shelters_restrictions = na.omit(shelters_restrictions)[1]
+      }
+      
       weekdays_fun = plyr::join(shelters_weekdays,
                                 shelters_fun3, 
                                 by = "shelters.NAME",
                                 type = "inner")
-      shelters_plot = plyr::join(weekdays_fun,
+      res_weekdays_fun = plyr::join(shelters_restrictions,
+                                weekdays_fun, 
+                                by = "shelters.NAME",
+                                type = "inner")
+      shelters_plot = plyr::join(res_weekdays_fun,
                                  shelters_fun2,
                                  by = "shelters.NAME")
       colnames(shelters_plot)[c(1,5,6,7,8)]= c("Shelter'name",
@@ -706,6 +735,49 @@ server <- function(input, output) {
         theme_bw()
       
     })
+    output$crime_shelters = renderPlot({
+      
+      crime_shelters_plot = reactive({
+        crime %>%
+          filter(crime_type %in% input$type1)})
+      
+      shelters_crime_plot = reactive({
+        if(is.null(input$show_funs1)){
+          shelters_fun3 = shelters_fun2[2]
+        }
+        else{
+          shelters_fun3 = shelters_fun2 %>% 
+            select(2,input$show_funs1)
+          shelters_fun3[shelters_fun3 == 0] =NA
+          shelters_fun3 = na.omit(shelters_fun3)[1]
+        }
+        shelters_plot = plyr::join(shelters_fun3,
+                                   shelters_fun2,
+                                   by = "shelters.NAME",
+                                   type = "inner")
+        shelters_plot
+        
+      })
+      
+      
+      ggmap(la_map) +
+        stat_density2d(data = crime_shelters_plot(), 
+                       aes(x = LONGITUDE, 
+                           y = LATITUDE,
+                           fill = crime_type,
+                           alpha = ..level..),
+                       geom = "polygon") +
+        theme_void()+
+        theme(plot.title = element_text(size = 18, hjust = .5))+    
+        theme(legend.position = "bottom")+
+        geom_point(data = shelters_crime_plot(),
+                   aes(x=shelters.LONGITUDE,
+                       y=shelters.LATITUDE,
+                       color = shelters.CITY),
+                   size =3)+
+        ggtitle("Shelters Distribution")+
+        theme(legend.position = "bottom")
+      })
     
 }
 
