@@ -135,7 +135,7 @@ server <- function(input, output) {
 #        geom_label(stat = "count", aes(label = ..count.., y = ..count..))+
         theme_bw()+
         labs(x = "Month", y = "Counts", 
-             title = paste("Response Level  (",input$res_level, ")  Counts\n by month", collapse = ""))+
+             title = paste("Response Level Counts by month", collapse = ""))+
         theme(legend.position="bottom", legend.title = element_blank())
     })
     #1 note
