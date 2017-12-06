@@ -199,7 +199,7 @@ ui <- fluidPage(tabsetPanel(
                ))
              
     ),
-    tabPanel("crime vs. shelters",
+    tabPanel("Crime vs. Shelters",
              sidebarPanel(
                helpText("Crime Types in Los Angeles"),
                checkboxGroupInput(inputId = "type1",
@@ -234,7 +234,7 @@ server <- function(input, output) {
                          geom = "polygon") +
             theme_void()+
             labs(x = "", y = "", 
-                 title = paste("Response Level (",input$res_level, ") Distribution", collapse = ""))+
+                 title = paste("Response Level (",input$res_level, ") Distribution by Month", collapse = ""))+
             theme(legend.position = "none") +
             theme(plot.title = element_text(size = 18, hjust = .5))+
             facet_wrap(~SERVICEMONTH)
@@ -283,7 +283,7 @@ server <- function(input, output) {
           theme_void()+
           theme(plot.title = element_text(size = 18, hjust = .5))+    
           labs(x = "", y = "", 
-               title = paste("Response Level Counts by Weekday", collapse = ""))+
+               title = paste("Response Level Distribution by Weekday", collapse = ""))+
           theme(legend.position = "bottom")  +
         facet_wrap(~SERVICE_WDAY)
     })
@@ -472,7 +472,7 @@ server <- function(input, output) {
                    y = count,
                    fill = as.factor(shelters.SPA)))+
           geom_bar(stat = "identity")+
-          xlab("Number of Shalters")+
+          xlab("Number of Shelters")+
           ylab("SPA")+
           ggtitle("Shalters count by SPA")+
           geom_text(aes(label = count),   # xudong help!
