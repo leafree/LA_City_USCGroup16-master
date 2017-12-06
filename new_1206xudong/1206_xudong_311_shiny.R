@@ -179,7 +179,7 @@ server <- function(input, output) {
     output$map2_bar_side <- renderPlot({
       ggplot(data = data_311call, 
              aes(x = SERVICE_WDAY, fill = RESPONSE_LEVEL)) +
-        geom_bar(position = "dodge")+
+        geom_bar(position = "dodge")+ 
 #        geom_label(stat = "count", aes(label = ..count.., y = ..count..))+
         theme_bw()+
         labs(x = "Week Day", y = "Service Counts", 
