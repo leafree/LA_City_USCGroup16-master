@@ -67,7 +67,7 @@ ui <- fluidPage(tabsetPanel(
             helpText("Tools to evaluate the problem solving ability over Month and SPA"),
             radioButtons(inputId = "status",
                         label = "Choose a call status to display",
-                        choices = list ("Closed", "Pending", "Cancelled"), 
+                        choices = list ("Closed", "Pending", "Cancelled"),  
                         selected = "Closed"),
             h5("Below is the bar chart to describe different requests' status distribution over weekday"),  
             plotOutput(outputId = "map3_bar_side")),
