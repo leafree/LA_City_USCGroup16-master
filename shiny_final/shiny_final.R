@@ -31,7 +31,6 @@ shelters_fun = read.csv("shelters_fun.csv")
 
 #add from Jue
 crime=read.csv("crime.csv")
-la_map = get_map(location = "Los Angeles", zoom = 10)
 crime$VICTIM.DESCENT = factor(ifelse(crime$VICTIM.DESCENT == "B", "Black",
                                      ifelse(crime$VICTIM.DESCENT == "H", "Hispanic", 
                                             ifelse(crime$VICTIM.DESCENT=="W","White",
@@ -123,7 +122,9 @@ ui <- fluidPage(tabsetPanel(
                  tabsetPanel(
                    id = 'dataset',
                    tabPanel("Shelters' Information", DT::dataTableOutput("table1")),
-                   tabPanel("Map", plotOutput(outputId = "plot1"))
+                   tabPanel("Map", 
+                            plotOutput(outputId = "plot1"),
+                            plotOutput(outputId = "plot2"))
                  )
                )   
              ) 
@@ -431,6 +432,26 @@ server <- function(input, output) {
         DT::datatable(shelters_plot()[,c(1,5,6,7,8)])
       }
     )
+    output$plot2 = renderPlot(
+      {
+        grouped = shelters_plot() %>% 
+          group_by(shelters.SPA) %>% 
+          summarise(count = n())
+        grouped = na.omit(grouped)
+        ggplot(data = grouped,
+               aes(x = as.factor(shelters.SPA),
+                   y = count,
+                   fill = as.factor(shelters.SPA)))+
+          geom_bar(stat = "identity")+
+          xlab("Number of Shalters")+
+          ylab("SPA")+
+          ggtitle("Shalters count by SPA")+
+          geom_text(aes(label = count), 
+                    position = position_stack(vjust = 0.8)) 
+      }
+    )
+    
+#add from Jue    
     output$crime_type = renderPlot({
       
       crime_type_shiny = reactive({
