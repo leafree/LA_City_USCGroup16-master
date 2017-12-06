@@ -140,11 +140,14 @@ ui <- fluidPage(tabsetPanel(
                checkboxGroupInput(inputId = "type",
                                   label = "Choose a crime type to display",
                                   choices = list ("AGGRAVATED ASSAULT", "SIMPLE ASSAULT", "ROBBERY","THEFT","RAPE","OTHERS"), 
-                                  selected = "AGGRAVATED ASSAULT")),
+                                  selected = c("AGGRAVATED ASSAULT","SIMPLE ASSAULT", "ROBBERY","THEFT","RAPE"))),
              mainPanel(
                verticalLayout(
-                 h3("Crime Type in LA", align = "center"),
+                 h5("Crime Type in LA", align = "center"),
                  plotOutput(outputId = "crime_type"),
+                 splitLayout(
+                   plotOutput(outputId = "type_premise"),
+                   plotOutput(outputId = "type_weapon")),
                  splitLayout(
                    plotOutput(outputId = "type_month"),
                    plotOutput(outputId = "type_hour")),
@@ -165,7 +168,7 @@ ui <- fluidPage(tabsetPanel(
                                   selected = "STREET")),
              mainPanel(
                verticalLayout(
-                 h3("Crime Premise in LA", align = "center"),
+                 h5("Crime Premise in LA", align = "center"),
                  plotOutput(outputId = "crime_premise"),
                  splitLayout(
                    plotOutput(outputId = "premise_month"),
@@ -187,7 +190,7 @@ ui <- fluidPage(tabsetPanel(
                                   selected = "STRONG-ARM")),
              mainPanel(
                verticalLayout(
-                 h3("Weapon used in Crime", align = "center"),
+                 h5("Weapon used in Crime", align = "center"),
                  plotOutput(outputId = "crime_weapon"),
                  splitLayout(
                    plotOutput(outputId = "weapon_month"),
@@ -495,6 +498,38 @@ server <- function(input, output) {
         theme_void()
       
     })
+    
+    output$type_premise = renderPlot ({
+      crime_type_shiny = reactive({
+        crime_type_shiny = crime %>%
+          filter(crime_type %in% input$type)})
+      
+      ggplot(crime_type_shiny(),aes(x=crime_type,fill=crime_premise))+
+        geom_bar(stat="count")+
+        xlab("Crime Type")+
+        theme_bw()+
+        theme(legend.title = element_blank())+
+        ggtitle("Crime Type and Crime Premise")
+      
+    })
+    
+    
+    output$type_weapon = renderPlot ({
+      crime_type_shiny = reactive({
+        crime_type_shiny = crime %>%
+          filter(crime_type %in% input$type)})
+      
+      ggplot(crime_type_shiny(),aes(x=crime_type,fill=crime_weapon))+
+        geom_bar(stat="count")+
+        xlab("Crime Type")+
+        theme_bw()+
+        theme(legend.title = element_blank())+
+        ggtitle("Crime Type and Weapon")
+      
+    })
+    
+    
+    
     output$type_month = renderPlot ({
       crime_type_shiny = reactive({
         crime_type_shiny = crime %>%
@@ -575,7 +610,8 @@ server <- function(input, output) {
         geom_point(data=crime_premise_shiny(),
                    aes(x=LONGITUDE,
                        y=LATITUDE,color=crime_premise))+
-        theme(legend.position = "none")
+        theme(legend.position = "none")+
+        theme_void()
       
     })
     
@@ -661,7 +697,8 @@ server <- function(input, output) {
         geom_point(data=crime_weapon_shiny(),
                    aes(x=LONGITUDE,
                        y=LATITUDE,color=crime_weapon))+
-        theme(legend.position = "none")
+        theme(legend.position = "none")+
+        theme_void()
       
     })
     
