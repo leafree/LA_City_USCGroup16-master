@@ -135,7 +135,7 @@ server <- function(input, output) {
 #        geom_label(stat = "count", aes(label = ..count.., y = ..count..))+
         theme_bw()+
         labs(x = "Month", y = "Counts", 
-             title = paste("Response Level Counts by month", collapse = ""))+
+             title = paste("Response Level Counts\nby month", collapse = ""))+
         theme(legend.position="bottom", legend.title = element_blank())
     })
     #1 note
@@ -183,7 +183,7 @@ server <- function(input, output) {
 #        geom_label(stat = "count", aes(label = ..count.., y = ..count..))+
         theme_bw()+
         labs(x = "Week Day", y = "Service Counts", 
-             title = paste("Response Level Counts by weekday", collapse = ""))+
+             title = paste("Response Level Counts\nby weekday", collapse = ""))+
         theme(legend.position="bottom", legend.title = element_blank())
     })
     
@@ -221,19 +221,7 @@ server <- function(input, output) {
             theme_bw()+
             theme(legend.position = "bottom")+
             labs(y = "counts",
-                 title = paste(input$status," Requests Counts by Month", collapse = ""))
-    })
-    
-    
-    output$map2_bar_side <- renderPlot({
-        ggplot(data = data_311call, 
-               aes(x = SERVICE_WDAY, fill = RESPONSE_LEVEL)) +
-            geom_bar(position = "dodge")+
-            #        geom_label(stat = "count", aes(label = ..count.., y = ..count..))+
-            theme_bw()+
-            labs(x = "Week Day", y = "Service Counts", 
-                 title = paste("Response Level  (",input$res_level2, ")  Counts\n by weekday", collapse = ""))+
-            theme(legend.position="bottom", legend.title = element_blank())
+                 title = paste("Different Request Status Counts\nby Month", collapse = ""))
     })
     
     
