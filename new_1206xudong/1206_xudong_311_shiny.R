@@ -183,7 +183,7 @@ server <- function(input, output) {
 #        geom_label(stat = "count", aes(label = ..count.., y = ..count..))+
         theme_bw()+
         labs(x = "Week Day", y = "Service Counts", 
-             title = paste("Response Level  (",input$res_level2, ")  Counts\n by weekday", collapse = ""))+
+             title = paste("Response Level Counts by weekday", collapse = ""))+
         theme(legend.position="bottom", legend.title = element_blank())
     })
     
