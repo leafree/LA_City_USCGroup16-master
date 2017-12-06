@@ -143,7 +143,7 @@ ui <- fluidPage(tabsetPanel(
                                   selected = "AGGRAVATED ASSAULT")),
              mainPanel(
                verticalLayout(
-                 h2("Crime Type in LA", align = "center"),
+                 h3("Crime Type in LA", align = "center"),
                  plotOutput(outputId = "crime_type"),
                  splitLayout(
                    plotOutput(outputId = "type_month"),
@@ -165,7 +165,7 @@ ui <- fluidPage(tabsetPanel(
                                   selected = "STREET")),
              mainPanel(
                verticalLayout(
-                 h2("Crime Premise in LA", align = "center"),
+                 h3("Crime Premise in LA", align = "center"),
                  plotOutput(outputId = "crime_premise"),
                  splitLayout(
                    plotOutput(outputId = "premise_month"),
@@ -187,7 +187,7 @@ ui <- fluidPage(tabsetPanel(
                                   selected = "STRONG-ARM")),
              mainPanel(
                verticalLayout(
-                 h2("Weapon used in Crime", align = "center"),
+                 h3("Weapon used in Crime", align = "center"),
                  plotOutput(outputId = "crime_weapon"),
                  splitLayout(
                    plotOutput(outputId = "weapon_month"),
@@ -501,7 +501,7 @@ server <- function(input, output) {
           filter(crime_type %in% input$type)})
       
       ggplot(crime_type_shiny(),aes(as.factor(newdate)))+
-        geom_histogram(stat="count",fill="#009E73")+
+        geom_histogram(stat="count",aes(fill=crime_type))+
         geom_line(stat="count",group=1,adjust=5,color="#D55E00")+
         ggtitle("Month Distribution of Crime Occurred")+
         xlab("Month")+
@@ -515,7 +515,7 @@ server <- function(input, output) {
           filter(crime_type %in% input$type)})
       
       ggplot(crime_type_shiny(),aes(as.factor(H)))+
-        geom_histogram(stat="count",fill="#009E73")+
+        geom_histogram(stat="count",aes(fill=crime_type))+
         geom_line(stat="count",group=1,adjust=5,color="#D55E00")+
         ggtitle("Hour Distribution of Crime Occurred")+
         xlab("Hour")+
@@ -585,7 +585,7 @@ server <- function(input, output) {
           filter(crime_premise %in% input$premise)})
       
       ggplot(crime_premise_shiny(),aes(as.factor(newdate)))+
-        geom_histogram(stat="count",fill="#009E73")+
+        geom_histogram(stat="count",aes(fill=crime_premise))+
         geom_line(stat="count",group=1,adjust=5,color="#D55E00")+
         ggtitle("Month Distribution of Crime Occurred")+
         xlab("Month")+
@@ -599,7 +599,7 @@ server <- function(input, output) {
           filter(crime_premise %in% input$premise)})
       
       ggplot(crime_premise_shiny(),aes(as.factor(H)))+
-        geom_histogram(stat="count",fill="#009E73")+
+        geom_histogram(stat="count",aes(fill=crime_premise))+
         geom_line(stat="count",group=1,adjust=5,color="#D55E00")+
         ggtitle("Hour Distribution of Crime Occurred")+
         xlab("Hour")+
@@ -671,7 +671,7 @@ server <- function(input, output) {
           filter(crime_weapon %in% input$weapon)})
       
       ggplot(crime_weapon_shiny(),aes(as.factor(newdate)))+
-        geom_histogram(stat="count",fill="#009E73")+
+        geom_histogram(stat="count",aes(fill=crime_weapon))+
         geom_line(stat="count",group=1,adjust=5,color="#D55E00")+
         ggtitle("Month Distribution of Crime Occurred")+
         xlab("Month")+
@@ -685,7 +685,7 @@ server <- function(input, output) {
           filter(crime_weapon %in% input$weapon)})
       
       ggplot(crime_weapon_shiny(),aes(as.factor(H)))+
-        geom_histogram(stat="count",fill="#009E73")+
+        geom_histogram(stat="count",aes(fill=crime_weapon))+
         geom_line(stat="count",group=1,adjust=5,color="#D55E00")+
         ggtitle("Hour Distribution of Crime Occurred")+
         xlab("Hour")+
